@@ -43,11 +43,8 @@ const App: React.FC = () => {
             <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center text-white font-bold">
               B
             </div>
-            <h1 className="text-xl font-bold text-slate-900 tracking-tight">BillParser AI</h1>
+            <h1 className="text-xl font-bold text-slate-900 tracking-tight">PPL Billing AI</h1>
           </div>
-          <a href="#" className="text-sm font-medium text-slate-500 hover:text-brand-600 transition-colors">
-            Documentation
-          </a>
         </div>
       </header>
 
@@ -60,7 +57,7 @@ const App: React.FC = () => {
               Understand your energy costs instantly.
             </h2>
             <p className="text-lg text-slate-600 mb-8">
-              Upload your utility bill PDF. We'll use AI to extract the data, visualize your usage, and find savings tips.
+              Upload your utility bill PDF. We'll use Gemini AI to extract the data, visualize your usage, and find savings tips.
             </p>
           </div>
         )}
@@ -78,7 +75,7 @@ const App: React.FC = () => {
                 <div className="absolute top-0 left-0 w-full h-full border-4 border-brand-100 rounded-full"></div>
                 <div className="absolute top-0 left-0 w-full h-full border-4 border-brand-500 rounded-full border-t-transparent animate-spin"></div>
               </div>
-              <p className="text-slate-600 font-medium">Analyzing PDF with AI...</p>
+              <p className="text-slate-600 font-medium">Analyzing PDF with Gemini...</p>
               <p className="text-sm text-slate-400">This may take a few seconds</p>
             </div>
           )}

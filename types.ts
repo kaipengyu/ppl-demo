@@ -12,6 +12,7 @@ export interface MonthlyComparison {
 
 export interface BillData {
   customerName: string;
+  customerFirstName: string;
   serviceAddress: string;
   meterNumber: string;
   accountNumber: string;
@@ -22,7 +23,13 @@ export interface BillData {
   energyTip: string;
   priceToCompare: number;
   billMonth: string;
+  amountComparisonSentence: string;
+  energyTipSentence: string;
   monthlyComparison: MonthlyComparison;
+  // Persona Fields
+  personaTitle: string;
+  personaDescription: string;
+  personaVisualPrompt: string;
 }
 
 export interface ParsedResponse {

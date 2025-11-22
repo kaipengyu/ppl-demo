@@ -1,5 +1,5 @@
 {
-  "name": "BillParser AI",
+  "name": "PPL Billing AI",
   "description": "A utility to extract and visualize structured data from PPL Electric Utility PDF bills using Gemini API.",
   "requestFramePermissions": []
 }
