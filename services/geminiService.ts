@@ -38,7 +38,7 @@ const billSchema: Schema = {
       required: ["month", "labelPreviousYear", "labelCurrentYear", "usagePrevious", "usageCurrent", "tempPrevious", "tempCurrent", "dailyCostPrevious", "dailyCostCurrent"]
     },
     personaTitle: { type: Type.STRING, description: "A creative, gamified title for the user based on their energy usage trend (e.g., 'The Eco-Wizard', 'The Power Pioneer')." },
-    personaDescription: { type: Type.STRING, description: "A fun, 2-sentence profile description explaining their title based on if they saved energy or used more compared to last year." },
+    personaDescription: { type: Type.STRING, description: "A fun, 2-sentence profile description. It MUST start with a personalized greeting using the customer's first name (e.g. 'Hi Natalie,', 'Greetings Natalie!', 'Ahoy Natalie!') that matches the persona's tone, followed by explaining their title based on their usage." },
     personaVisualPrompt: { type: Type.STRING, description: "A prompt to generate a 3D Pixar-style avatar image representing this persona (e.g. 'A cute 3d character holding a leaf shield')." }
   },
   required: ["customerName", "customerFirstName", "serviceAddress", "meterNumber", "accountNumber", "amountDue", "dueDate", "supplyCharges", "deliveryCharges", "energyTip", "priceToCompare", "billMonth", "amountComparisonSentence", "energyTipSentence", "monthlyComparison", "personaTitle", "personaDescription", "personaVisualPrompt"]
@@ -65,6 +65,8 @@ export const analyzeBill = async (base64Pdf: string): Promise<BillData> => {
             1. If usage decreased significantly (>10%): Assign a title like "The Eco-Guardian" or "Efficiency Ninja". Description should praise their planet-saving skills.
             2. If usage is about the same: Assign a title like "The Steady Captain". Description should talk about consistency.
             3. If usage increased: Assign a title like "The High-Voltage Hero" or "The Comfort Seeker". Description should be playful about using lots of power for gadgets or AC, suggesting they are living life to the fullest (but could save a bit).
+            
+            IMPORTANT: The 'personaDescription' MUST start with a personalized greeting using the Customer First Name (e.g. "Hi [Name],", "Greetings [Name]!", "Way to go [Name]!") that matches the persona's tone.
             
             Extract all data into the JSON structure:`
           }
