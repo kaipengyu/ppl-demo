@@ -28,8 +28,50 @@ const geocodeAddress = async (address: string): Promise<{ lat: number; lon: numb
     }
     
     const data = await response.json();
+    
+    // If specific address fails, try fallback to city/state extraction
     if (data.length === 0) {
-      throw new Error('Address not found');
+       // Try to extract City, State Zip from standard address format
+       // Example: "297 INDIGO WAY ALLENTOWN, PA 18104" -> "ALLENTOWN, PA 18104"
+       // This matches the pattern: City, State Zip
+       const cityStateMatch = address.match(/([A-Za-z\s]+),\s*([A-Za-z]{2})\s*(\d{5})?/);
+       
+       if (cityStateMatch) {
+          const cityState = cityStateMatch[0]; // "ALLENTOWN, PA 18104"
+          console.log(`Retrying geocode with city/state: ${cityState}`);
+          const retryResponse = await fetch(
+            `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(cityState)}&limit=1&appid=${apiKey}`
+          );
+          
+          if (retryResponse.ok) {
+             const retryData = await retryResponse.json();
+             if (retryData.length > 0) {
+                return { lat: retryData[0].lat, lon: retryData[0].lon };
+             }
+          }
+       }
+       
+       // Fallback 2: Try just the Zip Code
+       // Example: "297 INDIGO WAY ALLENTOWN, PA 18104" -> "18104"
+       const zipMatch = address.match(/\b\d{5}\b/);
+       if (zipMatch) {
+          const zipCode = zipMatch[0];
+          console.log(`Retrying geocode with zip code: ${zipCode}`);
+          const zipResponse = await fetch(
+            `https://api.openweathermap.org/geo/1.0/zip?zip=${zipCode},US&appid=${apiKey}`
+          );
+          
+          if (zipResponse.ok) {
+             const zipData = await zipResponse.json();
+             // Zip API returns a single object, not an array
+             if (zipData && zipData.lat && zipData.lon) {
+                return { lat: zipData.lat, lon: zipData.lon };
+             }
+          }
+       }
+
+       // Final fallback if extraction fails or retry fails
+       throw new Error('Address not found');
     }
     
     return { lat: data[0].lat, lon: data[0].lon };
