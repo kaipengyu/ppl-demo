@@ -129,7 +129,7 @@ const BillDisplay: React.FC<BillDisplayProps> = ({ data }) => {
           <div className="flex-1 text-center md:text-left space-y-3">
             
             <p className="text-brand-100 text-lg leading-relaxed font-light">
-              <span className="font-bold text-3xl text-white">HEY NEIGHBOR!</span> {data.personaDescription.replace(/^HEY NEIGHBOR![\s,]*/i, '')}
+              <span className="font-bold text-2xl text-white">HEY NEIGHBOR, </span> {data.personaDescription.replace(/^HEY NEIGHBOR![\s,]*/i, '')}
             </p>
 
             <div className="pt-4 flex flex-wrap gap-4 justify-center md:justify-start">
