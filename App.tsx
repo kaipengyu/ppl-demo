@@ -54,10 +54,10 @@ const App: React.FC = () => {
         {!billData && !isLoading && (
           <div className="text-center mb-12 max-w-2xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-              Understand your energy costs instantly.
+             You're looking to save. We're here to help.
             </h2>
             <p className="text-lg text-slate-600 mb-8">
-              Upload your utility bill PDF. We'll use AI to extract the data, visualize your usage, and find savings tips.
+              Upload your utility bill PDF. We'll use AI to get you customized savings tips to make you the envy of the neighborhood.
             </p>
           </div>
         )}

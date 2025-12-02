@@ -210,7 +210,7 @@ const BillDisplay: React.FC<BillDisplayProps> = ({ data }) => {
       {/* Weather Forecast Section */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div className="p-6 border-b border-slate-100">
-          <h3 className="text-lg font-bold text-slate-900">7-Day Weather Forecast</h3>
+          <h3 className="text-lg font-bold text-slate-900">Local 7-Day Weather Forecast</h3>
         </div>
 
         <div className="p-6">
@@ -331,7 +331,7 @@ const BillDisplay: React.FC<BillDisplayProps> = ({ data }) => {
       </div>
       */}
 
-      {/* JSON Display Section */}
+      {/* JSON Display Section - Commented Out
       <div className="bg-slate-900 rounded-xl shadow-xl overflow-hidden border border-slate-800">
         <div className="px-4 py-3 bg-slate-800 border-b border-slate-700 flex justify-between items-center">
           <div className="flex items-center gap-2">
@@ -358,6 +358,7 @@ const BillDisplay: React.FC<BillDisplayProps> = ({ data }) => {
           </pre>
         </div>
       </div>
+      */}
       <div className="text-center text-sm text-slate-500">
         Data extracted from {data.billMonth} statement for Account {data.accountNumber}
       </div>
