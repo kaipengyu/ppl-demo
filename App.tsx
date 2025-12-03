@@ -38,7 +38,7 @@ const App: React.FC = () => {
 
   return (
     <div className={`min-h-screen font-sans text-slate-900 ${!billData ? 'bg-cover bg-center' : 'bg-slate-50'}`}
-         style={!billData ? { backgroundImage: `url(${laundryHero})` } : undefined}>
+         style={!billData ? { backgroundImage: `url(${laundryHero})` } : { backgroundColor: '#f8fafc' }}>
       {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-center">

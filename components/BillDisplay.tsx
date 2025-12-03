@@ -4,7 +4,7 @@ import { generateEnergyCollage, generatePersonaImage } from '../services/geminiS
 import { fetchWeatherForecast, WeatherData } from '../services/weatherService';
 import { getBestRebate, getHouseholdTip } from '../utils/rebateUtils';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Lightbulb, DollarSign, Home, ExternalLink, CloudSun, Zap, Thermometer } from 'lucide-react';
+import { Lightbulb, DollarSign, Home, ExternalLink, CloudSun, Zap, Thermometer, Share2, ArrowRight } from 'lucide-react';
 import basePhoto from '../src/base-photo.jpg';
 
 interface BillDisplayProps {
@@ -25,6 +25,9 @@ const BillDisplay: React.FC<BillDisplayProps> = ({ data }) => {
   const jsonString = JSON.stringify(data, null, 2);
   const bestRebate = getBestRebate(data);
   const householdTip = getHouseholdTip(data);
+  
+  const isUsageDecreased = data.monthlyComparison.usageCurrent < data.monthlyComparison.usagePrevious;
+  const ctaText = isUsageDecreased ? "Share your story!" : "See how your neighbors reduced energy cost";
 
   // Automatically generate persona image on load
   useEffect(() => {
@@ -107,12 +110,16 @@ const BillDisplay: React.FC<BillDisplayProps> = ({ data }) => {
   return (
     <div className="w-full max-w-4xl mx-auto animate-fade-in space-y-8">
       {/* Persona Profile Card */}
-      <div className="bg-gradient-to-br from-brand-700 to-brand-900 rounded-2xl shadow-xl overflow-hidden text-white">
-        <div className="flex flex-col md:flex-row items-center p-8 gap-8">
+      <a 
+        href="#" 
+        onClick={(e) => e.preventDefault()}
+        className="block bg-gradient-to-br from-brand-700 to-brand-900 rounded-2xl shadow-xl overflow-hidden text-white group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer relative"
+      >
+        <div className="flex flex-col md:flex-row items-center p-8 gap-8 pb-16 md:pb-8">
           
           {/* Avatar Section */}
           <div className="relative flex-shrink-0">
-            <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white/20 shadow-2xl overflow-hidden bg-white/10 flex items-center justify-center">
+            <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white/20 shadow-2xl overflow-hidden bg-white/10 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
               {personaImage ? (
                 <img src={personaImage} alt={data.personaTitle} className="w-full h-full object-cover" />
               ) : (
@@ -132,22 +139,33 @@ const BillDisplay: React.FC<BillDisplayProps> = ({ data }) => {
               <span className="font-bold text-2xl text-white">HEY NEIGHBOR, </span> {data.personaDescription.replace(/^HEY NEIGHBOR![\s,]*/i, '')}
             </p>
 
-            <div className="pt-4 flex flex-wrap gap-4 justify-center md:justify-start">
-              <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg border border-white/10">
+            <div className="pt-4 flex flex-wrap items-center gap-4 justify-center md:justify-start">
+              <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg border border-white/10 group-hover:bg-white/20 transition-colors duration-300">
                 <p className="text-xs text-brand-200 uppercase">Amount Due</p>
                 <p className="font-bold text-xl">${data.amountDue}</p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg border border-white/10">
+              <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg border border-white/10 group-hover:bg-white/20 transition-colors duration-300">
                  <p className="text-xs text-brand-200 uppercase">Usage Change</p>
-                 <p className={`font-bold text-xl ${data.monthlyComparison.usageCurrent < data.monthlyComparison.usagePrevious ? 'text-ppl-paleGreen' : 'text-ppl-lightOrange'}`}>
-                   {data.monthlyComparison.usageCurrent < data.monthlyComparison.usagePrevious ? '↓' : '↑'} 
+                 <p className={`font-bold text-xl ${isUsageDecreased ? 'text-ppl-paleGreen' : 'text-ppl-lightOrange'}`}>
+                   {isUsageDecreased ? '↓' : '↑'} 
                    {Math.abs(Math.round(((data.monthlyComparison.usageCurrent - data.monthlyComparison.usagePrevious) / data.monthlyComparison.usagePrevious) * 100))}%
                  </p>
               </div>
             </div>
           </div>
         </div>
-      </div>
+        
+        <div className="absolute bottom-4 right-4 flex items-center gap-2 text-white/90 hover:text-white transition-colors z-10 bg-brand-900/30 px-3 py-1.5 rounded-full backdrop-blur-sm">
+           <span className="text-xs font-bold uppercase tracking-wider leading-none mt-[1px]">{ctaText}</span>
+           <div className="bg-ppl-orange p-1.5 rounded-full shadow-md group-hover:scale-110 transition-transform duration-300 flex items-center justify-center">
+             {isUsageDecreased ? (
+               <Share2 className="w-3 h-3 text-white" />
+             ) : (
+               <ArrowRight className="w-3 h-3 text-white" />
+             )}
+           </div>
+        </div>
+      </a>
 
       {/* Energy Tips Section */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
