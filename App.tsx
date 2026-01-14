@@ -23,8 +23,17 @@ const App: React.FC = () => {
       const data = await analyzeBill(base64);
       setBillData(data);
     } catch (err) {
-      console.error(err);
-      setError("Failed to process the bill. Please ensure it's a valid PDF and try again.");
+      console.error("Error processing bill:", err);
+      const errorMessage = err instanceof Error ? err.message : "Unknown error occurred";
+      
+      // Provide more specific error messages
+      if (errorMessage.includes("API key")) {
+        setError("API key not configured. Please check your environment variables.");
+      } else if (errorMessage.includes("No data extracted") || errorMessage.includes("generateContent")) {
+        setError("Failed to analyze the bill. The PDF may be corrupted or unreadable. Please try another file.");
+      } else {
+        setError(`Failed to process the bill: ${errorMessage}. Please ensure it's a valid PDF and try again.`);
+      }
     } finally {
       setIsLoading(false);
     }

@@ -2,7 +2,13 @@ import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { BillData } from "../types";
 
 // Note: We create a function to get the client to ensure we always use the latest key
-const getAiClient = () => new GoogleGenAI({ apiKey: process.env.API_KEY });
+const getAiClient = () => {
+  const apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error("API key not found. Please set API_KEY or GEMINI_API_KEY in your environment variables.");
+  }
+  return new GoogleGenAI({ apiKey });
+};
 
 const billSchema: Schema = {
   type: Type.OBJECT,
@@ -46,6 +52,11 @@ const billSchema: Schema = {
 
 export const analyzeBill = async (base64Pdf: string): Promise<BillData> => {
   try {
+    // Validate base64 input
+    if (!base64Pdf || base64Pdf.trim().length === 0) {
+      throw new Error("PDF file is empty or invalid");
+    }
+
     const ai = getAiClient();
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
@@ -106,11 +117,34 @@ export const analyzeBill = async (base64Pdf: string): Promise<BillData> => {
     });
 
     if (response.text) {
-      return JSON.parse(response.text) as BillData;
+      try {
+        return JSON.parse(response.text) as BillData;
+      } catch (parseError) {
+        console.error("Failed to parse response JSON:", parseError);
+        throw new Error("Invalid response format from AI service");
+      }
     }
-    throw new Error("No data extracted");
+    throw new Error("No data extracted from the bill");
   } catch (error) {
     console.error("Error analyzing bill:", error);
+    
+    // Provide more specific error messages
+    if (error instanceof Error) {
+      if (error.message.includes("API key")) {
+        throw error; // Already has a good message
+      } else if (error.message.includes("401") || error.message.includes("Unauthorized")) {
+        throw new Error("Invalid API key. Please check your GEMINI_API_KEY configuration.");
+      } else if (error.message.includes("403") || error.message.includes("Forbidden")) {
+        throw new Error("API access denied. Please check your API key permissions.");
+      } else if (error.message.includes("429") || error.message.includes("rate limit")) {
+        throw new Error("API rate limit exceeded. Please try again in a moment.");
+      } else if (error.message.includes("400") || error.message.includes("Bad Request")) {
+        throw new Error("Invalid PDF format or file too large. Please ensure the file is a valid PDF.");
+      } else if (error.message.includes("network") || error.message.includes("fetch")) {
+        throw new Error("Network error. Please check your internet connection and try again.");
+      }
+    }
+    
     throw error;
   }
 };
